@@ -1,8 +1,8 @@
-import {Socket} from "phoenix"
+//import {Socket} from "phoenix"
 
 // let socket = new Socket("/ws")
 // socket.connect()
-// let chan = socket.chan("topic:subtopic", {})
+// let chan = socket.chan("maze:lobby", {})
 // chan.join().receive("ok", chan => {
 //   console.log("Success!")
 // })

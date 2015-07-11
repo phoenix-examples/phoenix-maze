@@ -24,9 +24,33 @@
         var intervalVar;
 
         var myId = guid();
-        var me = {id: myId, posX: 425, posY: 3, style: '#0000FF'};
+        var me = {playerId: myId, posX: 425, posY: 3, style: '#0000FF'};
         var players = {};
         players[myId] = me;
+
+        var socket = new Phoenix.Socket("/ws")
+        socket.connect()
+        var chan = socket.chan("maze:lobby", {})
+        chan.join().receive("ok", function(chan) {
+            console.log("Success!")
+        });
+
+        chan.on("move_player", function(payload) {
+            console.log(payload);
+            if (me.playerId == payload.playerId) {
+                return; //don't need to me self
+            }
+
+            if (!players[payload.playerId]) {
+                players[payload.playerId] = payload; //add player if doesn't exist
+            }
+
+            var player = players[payload.playerId];
+            makeWhite(player.posX, player.posY, 15, 15);
+            players[payload.playerId].posX = payload.posX;
+            players[payload.playerId].posY = payload.posY;
+            drawPlayer(payload);
+        })
 
         function drawMazeAndRectangle(player) {
             makeWhite(0, 0, canvas.width, canvas.height);
@@ -42,6 +66,7 @@
             };
             mazeImg.src = "images/maze.gif";
         }
+
         function drawPlayer(player) {
             context.beginPath();
             context.rect(player.posX, player.posY, 15, 15);
@@ -49,6 +74,7 @@
             context.fillStyle = player.style;
             context.fill();
         }
+
         function moveRect(e) {
             var newX;
             var newY;
@@ -82,6 +108,7 @@
                 me.posX = newX;
                 me.posY = newY;
                 drawPlayer(me);
+                chan.push('move_player', me);
             }
             else if (movingAllowed === 2) { // 2 means 'the rectangle reached the end point'
                 clearInterval(intervalVar);
@@ -94,6 +121,7 @@
                 window.removeEventListener("keydown", moveRect, true);
             }
         }
+
         function canMoveTo(destX, destY) {
             var imgData = context.getImageData(destX, destY, 15, 15);
             var data = imgData.data;
@@ -115,6 +143,7 @@
             }
             return canMove;
         }
+
         function createTimer(seconds) {
             intervalVar = setInterval(function () {
                 makeWhite(mazeWidth, 0, canvas.width - mazeWidth, canvas.height);
@@ -150,6 +179,7 @@
                 seconds--;
             }, 1000);
         }
+
         function makeWhite(x, y, w, h) {
             context.beginPath();
             context.rect(x, y, w, h);
@@ -157,7 +187,10 @@
             context.fillStyle = "white";
             context.fill();
         }
+
         drawMazeAndRectangle(players[myId]);
         window.addEventListener("keydown", moveRect, true);
         //createTimer(120); // 2 minutes
+       
+
     </script>

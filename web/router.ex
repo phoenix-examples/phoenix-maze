@@ -12,6 +12,10 @@ defmodule HelloPhoenix.Router do
     plug :accepts, ["json"]
   end
 
+  socket "/ws", HelloPhoenix do
+    channel "maze:*", MazeChannel
+  end
+
   scope "/", HelloPhoenix do
     pipe_through :browser # Use the default browser stack
 
