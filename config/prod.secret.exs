@@ -10,6 +10,6 @@ config :hello_phoenix, HelloPhoenix.Endpoint,
 config :hello_phoenix, HelloPhoenix.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: System.get_env("DATABASE_USERNAME"),
-  password: System.get_env("DATABASE_PASSWORD")",
-  database: "hello_phoenix_heroku_prod",
+  password: System.get_env("DATABASE_PASSWORD"),
+  database: "hello_phoenix_prod",
   size: 20 # The amount of database connections in the pool
