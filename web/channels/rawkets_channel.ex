@@ -18,6 +18,7 @@ defmodule HelloPhoenix.RawketsChannel do
     #in NewPlayer out...
     def handle_in("3", %{"x" => x, "y" => y, "a" => a, "f" => f, "tat" => tat, "tats" => tats}, socket) do
       #type set color
+      p = %HelloPhoenix.Player{x: x, y: y, angle: a, showFlame: f }
       push socket, "4", %{i: tat, c: "rgb(199, 68, 145)"}
       broadcast! socket, "3", %{i: tat, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: "test", k: 1} 
       {:noreply, socket}
