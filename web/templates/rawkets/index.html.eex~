@@ -1,0 +1,80 @@
+    <link rel="stylesheet" href="<%= static_path(@conn, "/js/rawkets/style/reset.css") %>">
+    <link rel="stylesheet" href="<%= static_path(@conn, "/js/rawkets/style/main.css") %>">
+	
+	<body>
+		<canvas id="canvas" width="400" height="400"></canvas>
+		
+		<p id="ping"></p>
+		
+		<div id="mask"></div>
+		
+		<section id="welcome">
+			<header>
+				<h1>Rawkets</h1>
+			</header>
+			
+			<p>A massively multiplayer game in which you can shoot and interact with other players, in real-time, in space! It uses the latest Web technologies, including HTML5 canvas and WebSockets.</p>
+			
+			<p>Released early, updated often. <a href="http://rawkes.com/blog/2010/10/23/rawkets-development-update-1">Find out more about the game</a>.</p>
+		</section>
+		
+		<section id="offline">
+			<h1>Sorry, Rawkets is offline at the moment.</h1>
+			<p>Please try again in 5 minutes.</p>
+		</section>
+		<section id="support">
+			<h1>Sorry, your browser doesn't support WebSockets.</h1>
+			<p>Supported browsers are Safari, Chrome and Firefox 4 beta.</p>
+		</section>
+		<section id="authenticate">
+			<h1>Sorry, Twitter authentication failed.</h1>
+			<p>Unfortunately this is a new feature and isn't perfect just yet.</p>
+		</section>
+		<section id="playerExists">
+			<h1>Sorry, you seem to have a twin.</h1>
+			<p>Only one rawket is allowed per Twitter account.</p>
+		</section>
+		
+		<div id="soundContainer"></div>
+		
+		<script type="text/javascript">
+			$(function() {
+				// Admittedly probably a stupid way to pass these variables into the game code, but it works.
+				window.TWITTER_ACCESS_TOKEN = "";
+				window.TWITTER_ACCESS_TOKEN_SECRET = "";
+				window.TWITTER_AUTHENTICATE_URL = "";
+			});
+		</script>
+		
+<!--		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/swfobject/swfobject.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/bison.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Sound.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Socket.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Vector.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Rocket.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Bullet.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Player.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Viewport.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Star.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Game.js") %>"></script>
+		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/main.js") %>"></script>
+-->
+		
+    	<script type="text/javascript" src="/js/rawkets/swfobject/swfobject.js"></script>
+		<script type="text/javascript" src="/js/rawkets/bison.js"></script>
+		<script type="text/javascript" src="/js/rawkets/Sound.js"></script>
+		<script type="text/javascript" src="/js/rawkets/Socket.js"></script>
+		<script type="text/javascript" src="/js/rawkets/Vector.js"></script>
+		<script type="text/javascript" src="/js/rawkets/Rocket.js"></script>
+		<script type="text/javascript" src="/js/rawkets/Bullet.js"></script>
+		<script type="text/javascript" src="/js/rawkets/Player.js"></script>
+		<script type="text/javascript" src="/js/rawkets/Viewport.js"></script>
+		<script type="text/javascript" src="/js/rawkets/Star.js"></script>
+		<script type="text/javascript" src="/js/rawkets/Game.js"></script>
+		<script type="text/javascript" src="/js/rawkets/main.js"></script>
+
+			<!-- Observer App -->
+		<script type="text/javascript" src="http://www.observerapp.com/record.js"></script>
+		<script type="text/javascript">
+		try { Observerapp.record("4cc2aa5ba7b560500a05879c"); } catch(e) {};
+		</script>

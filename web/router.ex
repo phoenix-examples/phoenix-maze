@@ -14,6 +14,7 @@ defmodule HelloPhoenix.Router do
 
   socket "/ws", HelloPhoenix do
     channel "maze:*", MazeChannel
+    channel "rawkets:*", RawketsChannel
   end
 
   scope "/", HelloPhoenix do
@@ -24,6 +25,7 @@ defmodule HelloPhoenix.Router do
     get "hello/:messenger", HelloController, :show
 
     get "maze", MazeController, :index
+    get "rawkets", RawketsController, :index
   end
 
   # Other scopes may use custom stacks.
