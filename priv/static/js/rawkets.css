@@ -1,0 +1,412 @@
+body {
+	background: url("img/background.gif") center center;
+	color: #fff;
+	font-family: "TitilliumText22LRegular";
+	font-size: 16px;
+	line-height: 1.4em;
+	overflow: hidden;
+}
+canvas, footer, header, nav { display: block; }
+
+h1 {
+	color: #65c5f6;
+	font-family: "TitilliumText22LXBold";
+	font-size: 30px;
+	margin: 0 0 -5px 0;
+	/*text-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px;*/
+	text-shadow: rgba(95, 186, 245, 0.4) 0 0 5px;
+}
+
+h2 {
+	color: #65c5f6;
+	font-family: "TitilliumText22LRegular";
+	font-size: 24px;
+	margin: 40px 0 -5px 0;
+	/*text-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px;*/
+	text-shadow: rgba(95, 186, 245, 0.4) 0 0 5px;
+}
+
+a {
+	color: #65c5f6;
+	text-decoration: none;
+}
+
+	a:hover {
+		text-decoration: underline;
+	}
+
+p {
+	margin: 20px 0;
+}
+
+form {
+	margin: 0;
+	padding: 0;
+}
+
+	form #usernameError {
+		clear: both;
+		font-size: 14px;
+		padding: 10px 0;
+	}
+	
+	input {
+		background-color: #fff;
+		border: 2px solid #a6c0d0;
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+		-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+		-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+		color: #252932;
+		display: block;
+		float: left;
+		font-family: "TitilliumText22LRegular";
+		font-size: 14px;
+		line-height: 1em;
+		margin: 0 10px 0 0;
+		padding: 8px 5px 6px 5px;
+		width: 200px;
+	}
+	
+	input[type="submit"] {
+		background-color: #252932;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		color: #6dcaff;
+		cursor: pointer;
+		font-family: "TitilliumText22LBold";
+		line-height: auto;
+		padding: 8px 12px 6px;
+		text-align: center;
+		text-shadow: rgba(104, 192, 202, 0.05) 0 0 5px;
+		width: auto;
+	}
+	
+	input[type="submit"]:active {
+		
+	}
+
+#canvas {
+	margin: 42px 0 69px 0;
+}
+
+#overlay {
+	/*background-color: rgba(0, 0, 0, 0.5);*/
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+#header {
+	background: url("img/top_bar_background.png") repeat-x top center;
+	height: 43px;
+	line-height: 43px;
+}
+
+	#header h1 {
+		background: url("img/rawkets_logo.png") no-repeat;
+		float: left;
+		height: 21px;
+		margin: 11px 20px 0 20px;
+		text-indent: -9999em;
+		width: 86px;
+	}
+	
+	#header nav {
+		float: right;
+		width: 168px;
+	}
+	
+		#header nav ul {
+			margin: 0;
+			padding: 0;
+		}
+		
+		#header nav li {
+			display: block;
+			float: left;
+			height: 42px;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			text-indent: -9999em;
+		}
+		
+			#header nav li a {
+				position: relative;
+				text-decoration: none;
+			}
+		
+			#header nav span.label {
+				background-color: #272a33;
+				border: 2px solid #aab4be;
+				border-radius: 5px;
+				-moz-border-radius: 5px;
+				-webkit-border-radius: 5px;
+				box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+				-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+				-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+				color: #f9fbff;
+				display: none;
+				font-family: "TitilliumText22LBold";
+				font-size: 12px;
+				line-height: 1em;
+				padding: 6px 8px 5px;
+				position: absolute;
+				right: 0;
+				text-align: center;
+				text-decoration: none;
+				text-shadow: rgba(104, 192, 202, 0.05) 0 0 5px;
+				top: 53px;
+				width: 40px;
+			}
+			
+			#header nav span.anchor {
+				background: url("img/top_bar_tab_anchor.png") no-repeat top center;
+				display: block !important;
+				height: 9px;
+				left: 50%;
+				margin: -9px 0 0 -6px;
+				position: absolute;
+				top: 0;
+				width: 12px;
+			}
+			
+			#header nav span.right {
+				left: auto !important;
+				margin: -9px 0 0 0 !important;
+				right: 10px !important;
+			}
+		
+			#header nav li a {
+				display: block;
+			}
+			
+			#header nav li a:hover {
+				background-position: 0 -42px !important;
+			}
+			
+			#header nav li a:active, #header nav li a.active {
+				background-position: 0 -84px !important;
+			}
+		
+		#header #tabGame {
+			background: url("img/top_bar_tab_game.png") no-repeat top center;
+			height: 42px;
+			width: 57px;
+		}
+		
+		#header #tabSettings {
+			background: url("img/top_bar_tab_settings.png") no-repeat top center;
+			height: 42px;
+			width: 57px;
+		}
+		
+		#header #tabAbout {
+			background: url("img/top_bar_tab_about.png") no-repeat top center;
+			height: 42px;
+			width: 54px;
+		}
+
+#windowResize {
+	background: url("img/window_resize.png") no-repeat center center;
+	height: 20px;
+	opacity: 0.1;
+	position: absolute;
+	right: 18px;
+	top: 61px;
+	-moz-transition: all 0.2s;
+	-webkit-transition: all 0.2s;
+	-ms-transition: all 0.2s;
+	-o-transition: all 0.2s;
+	transition: all 0.2s;
+	width: 20px;
+}
+	
+	#windowResize:hover {
+		cursor: pointer;
+		opacity: 0.4;
+		-moz-transform: scale(1.1);
+		-webkit-transform: scale(1.1);
+		-o-transform: scale(1.1);
+		-ms-transform: scale(1.1);
+		transform: scale(1.1);
+		-moz-transition: all 0.2s;
+		-webkit-transition: all 0.2s;
+		-ms-transition: all 0.2s;
+		-o-transition: all 0.2s;
+		transition: all 0.2s;
+	}
+
+	body:-moz-full-screen #windowResize {
+		display: none;
+	}
+
+#statistics {
+	background: url("img/bottom_bar_background.png") repeat-x top center;
+	bottom: 0;
+	color: #c6cddb;
+	font-family: "HelveticaNeue-UltraLight", "Helvetica Neue UltraLight", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-size: 18px;
+	font-weight: lighter;
+	height: 72px;
+	left: 0;
+	letter-spacing: 0;
+	position: absolute;
+	text-shadow: rgba(0, 0, 0, 0.5) 0 -1px 0;
+	width: 100%;
+}
+
+	#killedBy {
+		color: rgba(172, 181, 198, 0.5);
+		font-size: 16px;
+		left: 0;
+		margin: -35px 0 0 20px;
+		position: absolute;
+		text-shadow: none;
+		top: 0;
+	}
+	
+	#score {
+		background: url("img/bottom_bar_score_background.gif") repeat-x top center;
+		border: 2px solid #aab4be;
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+		-moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+		-webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px;
+		color: #65c5f6;
+		float: left;
+		font-family: "TitilliumText22LBold";
+		font-size: 24px;
+		height: 39px;
+		line-height: 42px;
+		margin: 16px 0 0 20px;
+		padding: 0 10px;
+		text-align: right;
+		text-shadow: rgba(95, 186, 245, 0.4) 0 0 5px;
+		width: 55px;
+	}
+
+	#playerCount {
+		float: left;
+		height: 72px;
+		line-height: 76px;
+		margin: 0 0 0 20px;
+		overflow: hidden;
+		width: 200px;
+	}
+
+	#updates {
+		float: right;
+		height: 72px;
+		line-height: 76px;
+		margin: 0 20px 0 0px;
+		overflow: hidden;
+		text-align: right;
+		width: 45%;
+	}
+
+		#updates a {
+			color: #5b6373;
+			text-decoration: none;
+		}
+	
+		#updates a:hover {
+			border-bottom: 1px solid #5b6373;
+		}
+		
+#chat {
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+	#chatDisplay {
+		font-size: 11px;
+		margin: 0 20px 0 0;
+		padding: 0;
+		position: absolute;
+		right: 0;
+		text-align: right;
+		top: 100px;
+	}
+
+	#chatDisplay li {
+		background: rgba(18, 20, 26, 0.3);
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+		clear: both;
+		float: right;
+		line-height: 1em;
+		margin: 0 0 5px 0;
+		padding: 6px 6px 3px 6px;
+	}
+	
+	#chatDisplay span {
+		color: #65c5f6;
+		font-family: "TitilliumText22LBold";
+		padding-right: 5px;
+		text-shadow: rgba(95, 186, 245, 0.4) 0 0 5px;
+	}
+	
+	#chatInput {
+		background: rgba(0, 0, 0, 0.5);
+		color: #fff;
+		display: none;
+		font-family: "TitilliumText22LRegular";
+		font-size: 30px;
+		height: 80px;
+		left: 0;
+		line-height: 85px;
+		margin: 0;
+		position: absolute;
+		text-align: center;
+		top: 42px;
+		width: 100%;
+	}
+	
+	#chatInput p {
+		margin: 0;
+		padding: 0;
+	}
+	
+	#chatLimit {
+		color: #5b6373;
+		font-family: "TitilliumText22LThin";
+		margin: 0 40px;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+		
+#intro {
+	color: #fff;
+	font-size: 24px;
+	line-height: 1.3em;
+	margin: 100px auto 0 auto;
+	text-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px;
+	width: 400px;
+}
+
+	#join {
+
+	}
+		
+#settings, #about {
+	display: none;
+	margin: 80px auto 100px auto;
+	width: 700px;
+}
+
+#soundContainer {
+	position: absolute;
+	visibility: hidden !important;
+}
