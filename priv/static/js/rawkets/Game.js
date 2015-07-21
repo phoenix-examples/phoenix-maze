@@ -7,9 +7,10 @@
 /**
  * @constructor
  */
-var Game = function(twitterAccessToken, twitterAccessTokenSecret) {
-	this.twitterAccessToken = twitterAccessToken;
-	this.twitterAccessTokenSecret = twitterAccessTokenSecret;
+var Game = function(player_id) {
+	this.twitterAccessToken = 'twitterAccessToken';
+	this.twitterAccessTokenSecret = 'twitterAccessTokenSecret';
+    this.player_id = player_id;
 	this.authenticated = false;
 	
 	this.mask = $("#mask");
@@ -68,14 +69,15 @@ Game.prototype.initGame = function() {
 	// Initialise player object if one doesn't exist yet
 	if (this.player == null) {
 		this.player = new Player(1000.0, 1000.0);
+        this.player.id = this.player_id;
 
-    this.socket.push(Game.MESSAGE_TYPE_NEW_PLAYER, {
-      x: this.player.pos.x, 
-      y: this.player.pos.y, 
-      a: this.player.rocket.angle, 
-      f: this.player.rocket.showFlame, 
-      tat: "test", 
-      tats: "test"});
+        this.socket.push(Game.MESSAGE_TYPE_NEW_PLAYER, {
+          x: this.player.pos.x, 
+          y: this.player.pos.y, 
+          a: this.player.rocket.angle, 
+          f: this.player.rocket.showFlame, 
+          i: this.player.id});
+      
 
 		//this.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_NEW_PLAYER, {
     //  x: this.player.pos.x, 
@@ -117,17 +119,27 @@ Game.prototype.initSocketListeners = function() {
     if (self.player.id == null) {
       self.player.id = data.i;
     };
-            
     self.player.rocket.colour = self.player.rocket.originalColour = data.c;
-    
     // Player is set up so let them get shot now
     self.player.active = true;
     self.player.alive = true;
     self.player.allowedToShoot = true;
-    
-    //var msg = Game.formatMessage(Game.MESSAGE_TYPE_REVIVE_PLAYER, {});
-    //this.socket.send(msg); 
   })
+
+  //new player
+  this.socket.on('3', function(data) {
+    var player = new Player(data.x, data.y);
+    player.id = data.i;
+    player.name = data.n;
+    player.active = true;
+    player.alive = true;
+    player.killCount = data.k;
+    player.rocket.pos = self.viewport.worldToScreen(player.pos.x, player.pos.y);
+    player.rocket.angle = data.a;
+    player.rocket.colour = player.rocket.originalColour = data.c;
+    player.rocket.showFlame = data.f;
+	self.players.push(player);
+  });
 
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
@@ -572,7 +584,13 @@ Game.prototype.sendPlayerPosition = function() {
 		self = this;
 		self.haltMessages = true;
 		setTimeout(function() {
-			self.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_UPDATE_PLAYER, {x: self.player.pos.x, y: self.player.pos.y, a: self.player.rocket.angle, f: self.player.rocket.showFlame}));
+			//self.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_UPDATE_PLAYER, {x: self.player.pos.x, y: self.player.pos.y, a: self.player.rocket.angle, f: self.player.rocket.showFlame}));
+            self.socket.push(Game.MESSAGE_TYPE_UPDATE_PLAYER, {
+                x: self.player.pos.x, 
+                y: self.player.pos.y, 
+                a: self.player.rocket.angle, 
+                f: self.player.rocket.showFlame,
+                i: self.player.id});
 			self.haltMessages = false;
 		}, 30);
 	};

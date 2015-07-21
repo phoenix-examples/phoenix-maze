@@ -1,5 +1,6 @@
 defmodule HelloPhoenix.RawketsChannel do
     use Phoenix.Channel
+    use Database
 
     def join("rawkets:game", auth_msg, socket) do
         {:ok, socket}
@@ -9,6 +10,10 @@ defmodule HelloPhoenix.RawketsChannel do
         {:error, %{reason: "unauthorized"}}
     end
 
+    def handle_in("5", %{"x" => x, "y" => y, "a" => a, "f" => f, "i" => i}, socket) do 
+      {:noreply, socket}
+    end
+
     #in Authenticate out Authenticate_Passed
     def handle_in("9", %{"tat" => tat, "tats" => tats}, socket) do
       push socket, "7", %{val: "true"}
@@ -16,20 +21,36 @@ defmodule HelloPhoenix.RawketsChannel do
     end 
 
     #in NewPlayer out...
-    def handle_in("3", %{"x" => x, "y" => y, "a" => a, "f" => f, "tat" => tat, "tats" => tats}, socket) do
+    def handle_in("3", %{"x" => x, "y" => y, "a" => a, "f" => f, "i" => i}, socket) do
       #type set color
-      p = %HelloPhoenix.Player{x: x, y: y, angle: a, showFlame: f }
+      p = %Player{name: i, x: x, y: y, angle: a, showFlame: f }
+
+      Amnesia.start
+      Amnesia.transaction do
+        p |> Player.write
+      end
+      Amnesia.stop
       
       #send current players
-      players = decode(HelloPhoenix.Redis.q(["GETALL", "Players"]))
+      #players = decode(HelloPhoenix.Redis.q(["HGETALL", "Players"]))
 
-      push socket, "4", %{i: tat, c: "rgb(199, 68, 145)"}
-      broadcast! socket, "3", %{i: tat, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: "test", k: 1} 
+      push socket, "4", %{i: i, c: "rgb(199, 68, 145)"}
+      #tell everyone about new player
+      broadcast! socket, "3", %{i: i, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
+    
+      #tell new player about everyone
+      Amnesia.start
+      Amnesia.transaction do
+        query_all = [id: '_']
+        all_players = Player.match(query_all)
+        Enum.each(all_players, fn(p) -> push socket, "3", %{i: p.name, x: p.x, y: p.y, a: p.angle, c: p.color, f: p.showFlame, n: p.name, k: p.killCount} end)
+      end
+      
       {:noreply, socket}
     end 
 
 
-
+    #Redis helpers
     defp decode({:ok, :undefined}) do 
        Map.new 
     end

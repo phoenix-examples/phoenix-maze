@@ -1,5 +1,6 @@
 defmodule HelloPhoenix do
   use Application
+  use Database
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -13,13 +14,14 @@ defmodule HelloPhoenix do
       worker(HelloPhoenix.Repo, []),
       # Here you could define other workers and supervisors as children
       # worker(HelloPhoenix.Worker, [arg1, arg2, arg3]),
-      worker(HelloPhoenix.Redis, []),
+      # worker(HelloPhoenix.Redis, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: HelloPhoenix.Supervisor]
     Supervisor.start_link(children, opts)
+    
   end
 
   # Tell Phoenix to update the endpoint configuration

@@ -1,6 +1,13 @@
 $(function() {
 	var game;
 	
+    function guid() {
+            var ret = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);});
+            return ret;
+    }
+        
 	/**
 	 * Initialises client-side functionality
 	 */
@@ -28,7 +35,8 @@ $(function() {
 				var params = {allowscriptaccess: "always"};
 				swfobject.embedSWF("/js/rawkets/style/Sounds.swf", "soundContainer", "0", "0", "9.0.0", "", flashvars, params);
 				
-				game = new Game(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET);
+                var playerId = guid().slice(0,6);
+				game = new Game(playerId);
 
 				$("#attribution, #ping").fadeTo(500, 0.1).mouseover(function() {
 					$(this).stop().fadeTo(500, 1);

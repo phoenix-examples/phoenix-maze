@@ -7,9 +7,10 @@
 /**
  * @constructor
  */
-var Game = function(twitterAccessToken, twitterAccessTokenSecret) {
-	this.twitterAccessToken = twitterAccessToken;
-	this.twitterAccessTokenSecret = twitterAccessTokenSecret;
+var Game = function(player_id) {
+	this.twitterAccessToken = 'twitterAccessToken';
+	this.twitterAccessTokenSecret = 'twitterAccessTokenSecret';
+    this.player_id = player_id;
 	this.authenticated = false;
 	
 	this.mask = $("#mask");
@@ -22,22 +23,22 @@ var Game = function(twitterAccessToken, twitterAccessTokenSecret) {
 /**
  * Message protocols
  */
-Game.MESSAGE_TYPE_PING = 1;
-Game.MESSAGE_TYPE_UPDATE_PING = 2;
-Game.MESSAGE_TYPE_NEW_PLAYER = 3;
-Game.MESSAGE_TYPE_SET_COLOUR = 4;
-Game.MESSAGE_TYPE_UPDATE_PLAYER = 5;
-Game.MESSAGE_TYPE_REMOVE_PLAYER = 6;
-Game.MESSAGE_TYPE_AUTHENTICATION_PASSED = 7;
-Game.MESSAGE_TYPE_AUTHENTICATION_FAILED = 8;
-Game.MESSAGE_TYPE_AUTHENTICATE = 9;
-Game.MESSAGE_TYPE_ERROR = 10;
-Game.MESSAGE_TYPE_ADD_BULLET = 11;
-Game.MESSAGE_TYPE_UPDATE_BULLET = 12;
-Game.MESSAGE_TYPE_REMOVE_BULLET = 13;
-Game.MESSAGE_TYPE_KILL_PLAYER = 14;
-Game.MESSAGE_TYPE_UPDATE_KILLS = 15;
-Game.MESSAGE_TYPE_REVIVE_PLAYER = 16;
+Game.MESSAGE_TYPE_PING = '1';
+Game.MESSAGE_TYPE_UPDATE_PING = '2';
+Game.MESSAGE_TYPE_NEW_PLAYER = '3';
+Game.MESSAGE_TYPE_SET_COLOUR = '4';
+Game.MESSAGE_TYPE_UPDATE_PLAYER = '5';
+Game.MESSAGE_TYPE_REMOVE_PLAYER = '6';
+Game.MESSAGE_TYPE_AUTHENTICATION_PASSED = '7';
+Game.MESSAGE_TYPE_AUTHENTICATION_FAILED = '8';
+Game.MESSAGE_TYPE_AUTHENTICATE = '9';
+Game.MESSAGE_TYPE_ERROR = '10';
+Game.MESSAGE_TYPE_ADD_BULLET = '11';
+Game.MESSAGE_TYPE_UPDATE_BULLET = '12';
+Game.MESSAGE_TYPE_REMOVE_BULLET = '13';
+Game.MESSAGE_TYPE_KILL_PLAYER = '14';
+Game.MESSAGE_TYPE_UPDATE_KILLS = '15';
+Game.MESSAGE_TYPE_REVIVE_PLAYER = '16';
 
 /**
  * Initialise game environment
@@ -68,8 +69,24 @@ Game.prototype.initGame = function() {
 	// Initialise player object if one doesn't exist yet
 	if (this.player == null) {
 		this.player = new Player(1000.0, 1000.0);
-		this.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_NEW_PLAYER, {x: this.player.pos.x, y: this.player.pos.y, a: this.player.rocket.angle, f: this.player.rocket.showFlame, tat: this.twitterAccessToken, tats: this.twitterAccessTokenSecret}));
-		
+        this.player.id = this.player_id;
+
+        this.socket.push(Game.MESSAGE_TYPE_NEW_PLAYER, {
+          x: this.player.pos.x, 
+          y: this.player.pos.y, 
+          a: this.player.rocket.angle, 
+          f: this.player.rocket.showFlame, 
+          i: this.player.id});
+      
+
+		//this.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_NEW_PLAYER, {
+    //  x: this.player.pos.x, 
+    //  y: this.player.pos.y, 
+    //  a: this.player.rocket.angle, 
+    //  f: this.player.rocket.showFlame, 
+    //  tat: this.twitterAccessToken, 
+    //  tats: this.twitterAccessTokenSecret}));
+
 		this.timeout();
 	};
 };
@@ -80,32 +97,55 @@ Game.prototype.initGame = function() {
 Game.prototype.initSocketListeners = function() {
 	// Horrible passing of game object due to event closure
 	var self = this;
-
-    this.socket.join().receive("ok", function() {
-	    self.offline.fadeOut();
-	    self.authenticate();
-    });	
 	
-    this.socket.on(7, function(msg) {
-        this.authenticated = true;
-	    this.initGame();
-    });
+  this.socket.join().receive("ok", function(chan) {
+	  self.offline.fadeOut();
+	  self.authenticate();
+  });
 
-    //this.socket.onmessage = function(msg) {
-	//	self.onSocketMessage(msg.data);
-	//};
+  //authenticate
+	this.socket.on('9', function(payload) {
+    console.log(payload);
+  });
 
+  //authenticate passed
+	this.socket.on('7', function(payload) {
+    self.authenticated = true;
+    self.initGame();
+  });
+
+  //type set color
+  this.socket.on('4', function(data) {
+    if (self.player.id == null) {
+      self.player.id = data.i;
+    };
+    self.player.rocket.colour = self.player.rocket.originalColour = data.c;
+    // Player is set up so let them get shot now
+    self.player.active = true;
+    self.player.alive = true;
+    self.player.allowedToShoot = true;
+  })
+
+  //new player
+  this.socket.on('3', function(data) {
+    var player = new Player(data.x, data.y);
+    player.id = data.i;
+    player.name = data.n;
+    player.active = true;
+    player.alive = true;
+    player.killCount = data.k;
+    player.rocket.pos = this.viewport.worldToScreen(player.pos.x, player.pos.y);
+    player.rocket.angle = data.a;
+    player.rocket.colour = player.rocket.originalColour = data.c;
+    player.rocket.showFlame = data.f;
+	self.players.push(player);
+  });
 
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
 	};
 };
 
-/**
- * Event handler for socket connection
- */
-Game.prototype.onSocketConnect = function() {
-};
 
 /**
  * Event handler for socket messages
@@ -287,8 +327,11 @@ Game.prototype.onSocketDisconnect = function() {
  * Authenticate player on the server
  */
 Game.prototype.authenticate = function() {
-	var msg = Game.formatMessage(Game.MESSAGE_TYPE_AUTHENTICATE, {tat: this.twitterAccessToken, tats: this.twitterAccessTokenSecret});
-	this.socket.send(msg);
+	//var msg = Game.formatMessage(Game.MESSAGE_TYPE_AUTHENTICATE, {tat: this.twitterAccessToken, tats: this.twitterAccessTokenSecret});
+	//this.socket.send(msg);
+  //var msg = {type: Game.MESSAGE_TYPE_AUTHENTICATE, tat: '', tats:''}
+  var msg = {tat: 'test', tats: 'test'};
+  this.socket.push(Game.MESSAGE_TYPE_AUTHENTICATE, msg);
 };
 
 /**
@@ -541,7 +584,13 @@ Game.prototype.sendPlayerPosition = function() {
 		self = this;
 		self.haltMessages = true;
 		setTimeout(function() {
-			self.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_UPDATE_PLAYER, {x: self.player.pos.x, y: self.player.pos.y, a: self.player.rocket.angle, f: self.player.rocket.showFlame}));
+			//self.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_UPDATE_PLAYER, {x: self.player.pos.x, y: self.player.pos.y, a: self.player.rocket.angle, f: self.player.rocket.showFlame}));
+            self.socket.push(Game.MESSAGE_TYPE_UPDATE_PLAYER, {
+                x: self.player.pos.x, 
+                y: self.player.pos.y, 
+                a: self.player.rocket.angle, 
+                f: self.player.rocket.showFlame,
+                i: self.player.id});
 			self.haltMessages = false;
 		}, 30);
 	};
