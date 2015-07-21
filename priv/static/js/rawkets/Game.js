@@ -141,6 +141,14 @@ Game.prototype.initSocketListeners = function() {
 	self.players.push(player);
   });
 
+    this.socket.on('5', function(data) {
+        var player = self.getPlayerById(data.i);
+        player.pos.x = data.x;
+        player.pos.y = data.y;
+        player.rocket.angle = data.a;
+        player.rocket.showFlame = data.f
+    })
+
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
 	};

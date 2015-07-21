@@ -134,12 +134,20 @@ Game.prototype.initSocketListeners = function() {
     player.active = true;
     player.alive = true;
     player.killCount = data.k;
-    player.rocket.pos = this.viewport.worldToScreen(player.pos.x, player.pos.y);
+    player.rocket.pos = self.viewport.worldToScreen(player.pos.x, player.pos.y);
     player.rocket.angle = data.a;
     player.rocket.colour = player.rocket.originalColour = data.c;
     player.rocket.showFlame = data.f;
 	self.players.push(player);
   });
+
+    this.socket.on('5', function(data) {
+        var player = self.getPlayerById(data.i);
+        player.pos.x = data.x;
+        player.pos.y = data.y;
+        player.rocket.angle = data.a;
+        player.rocket.showFlame = data.f
+    })
 
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
