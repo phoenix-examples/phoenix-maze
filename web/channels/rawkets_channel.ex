@@ -31,27 +31,23 @@ defmodule HelloPhoenix.RawketsChannel do
     #in NewPlayer out...
     def handle_in("3", %{"x" => x, "y" => y, "a" => a, "f" => f, "i" => i}, socket) do
       #type set color
-      p = %Player{id: i, name: i, x: x, y: y, angle: a, showFlame: f }
+      p = %Player{id: i, name: i, x: x, y: y, angle: a, showFlame: f, color: "rgb(199, 68, 145)", killCount: 0}
 
-      Amnesia.start
-      Amnesia.transaction do
-        p |> Player.write
-      end
-      Amnesia.stop
-      
-      #send current players
-      #players = decode(HelloPhoenix.Redis.q(["HGETALL", "Players"]))
-
+      #set color
       push socket, "4", %{i: i, c: "rgb(199, 68, 145)"}
+
       #tell everyone about new player
-      broadcast! socket, "3", %{i: i, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
+      broadcast! socket, "3", %{i: i, x: x, y: y,  a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
     
       #tell new player about everyone
       Amnesia.start
       Amnesia.transaction do
-        query_all = [id: '_']
-        all_players = Player.match(query_all)
+        selection = Player.where id != nil
+        all_players = selection |> Amnesia.Selection.values
         Enum.each(all_players, fn(p) -> push socket, "3", %{i: p.name, x: p.x, y: p.y, a: p.angle, c: p.color, f: p.showFlame, n: p.name, k: p.killCount} end)
+
+        #write new player to db
+        p |> Player.write
       end
       
       {:noreply, socket}

@@ -128,6 +128,9 @@ Game.prototype.initSocketListeners = function() {
 
   //new player
   this.socket.on('3', function(data) {
+    if (data.i == self.player.id) {
+      return;
+    }
     var player = new Player(data.x, data.y);
     player.id = data.i;
     player.name = data.n;
@@ -138,10 +141,13 @@ Game.prototype.initSocketListeners = function() {
     player.rocket.angle = data.a;
     player.rocket.colour = player.rocket.originalColour = data.c;
     player.rocket.showFlame = data.f;
-	self.players.push(player);
+	  self.players.push(player);
   });
 
     this.socket.on('5', function(data) {
+        if (data.i == self.player.id) {
+          return;
+        }
         var player = self.getPlayerById(data.i);
         player.pos.x = data.x;
         player.pos.y = data.y;
