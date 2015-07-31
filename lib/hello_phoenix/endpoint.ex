@@ -1,6 +1,8 @@
 defmodule HelloPhoenix.Endpoint do
   use Phoenix.Endpoint, otp_app: :hello_phoenix
 
+  socket "/ws", HelloPhoenix.UserSocket
+
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
@@ -32,5 +34,5 @@ defmodule HelloPhoenix.Endpoint do
     key: "_hello_phoenix_key",
     signing_salt: "kiSLei1x"
 
-  plug :router, HelloPhoenix.Router
+  plug HelloPhoenix.Router
 end

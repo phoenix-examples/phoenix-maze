@@ -11,13 +11,15 @@ defmodule HelloPhoenix.RawketsChannel do
     end
 
     def handle_in("5", %{"x" => x, "y" => y, "a" => a, "f" => f, "i" => i}, socket) do 
-        Amnesia.start
-        Amnesia.transaction do
-            old = Player.read(i)        
-            new = %{old | x: x, y: y, angle: a, showFlame: f}
-            new |> Player.write
-        end
-        Amnesia.stop 
+       # Amnesia.start
+       # Amnesia.transaction do
+       #     old = Player.read(i)
+       #     if old do        
+       #       new = %{old | x: x, y: y, angle: a, showFlame: f}
+       #       new |> Player.write
+       #     end
+       # end
+       # Amnesia.stop 
         broadcast! socket, "5", %{i: i, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
         {:noreply, socket}
     end
