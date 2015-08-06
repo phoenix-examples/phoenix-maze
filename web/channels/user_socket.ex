@@ -33,6 +33,6 @@ defmodule HelloPhoenix.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   # def id(_socket), do: nil
-  def id(_socket), do: "users_socket:#{_socket.assigns.user_id}"
+  def id(_socket), do: _socket.assigns.user_id
   
 end

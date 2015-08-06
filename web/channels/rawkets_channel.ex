@@ -33,14 +33,13 @@ defmodule HelloPhoenix.RawketsChannel do
     #in NewPlayer out...
     def handle_in("3", %{"x" => x, "y" => y, "a" => a, "f" => f, "i" => i}, socket) do
       #type set color
-      p = %Player{id: i, name: i, x: x, y: y, angle: a, showFlame: f, color: "rgb(199, 68, 145)", killCount: 0}
+      p = %Player{id: socket.id, name: i, x: x, y: y, angle: a, showFlame: f, color: "rgb(199, 68, 145)", killCount: 0}
 
       #set color
       push socket, "4", %{i: i, c: "rgb(199, 68, 145)"}
 
       #tell everyone about new player
-      broadcast! socket, "3", %{i: i, x: x, y: y,  a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
-    
+      broadcast! socket, "3", %{i: socket.id, x: x, y: y,  a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
       #tell new player about everyone
       Amnesia.start
       Amnesia.transaction do
@@ -54,6 +53,15 @@ defmodule HelloPhoenix.RawketsChannel do
       
       {:noreply, socket}
     end 
+
+    def terminate(err, socket) do
+      Amnesia.start
+      Amnesia.transaction do
+        IO.puts("terminate")
+        IO.puts(socket.id)
+        Player.read(socket.id) |> Player.delete
+      end
+    end
 
 
     #Redis helpers

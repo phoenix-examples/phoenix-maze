@@ -16,7 +16,7 @@ var Game = function(player_id) {
 	this.mask = $("#mask");
 	this.offline = $("#offline");
 	
-	this.socket = new Socket();
+	this.socket = new Socket(player_id);
 	this.initSocketListeners(); // I realise this is going to receive unwanted events	
 };
 
@@ -76,7 +76,8 @@ Game.prototype.initGame = function() {
           y: this.player.pos.y, 
           a: this.player.rocket.angle, 
           f: this.player.rocket.showFlame, 
-          i: this.player.id});
+          i: this.player.id,
+          user_id: this.player.id});
       
 
 		//this.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_NEW_PLAYER, {
