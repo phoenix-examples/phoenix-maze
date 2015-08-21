@@ -76,8 +76,7 @@ Game.prototype.initGame = function() {
           y: this.player.pos.y, 
           a: this.player.rocket.angle, 
           f: this.player.rocket.showFlame, 
-          i: this.player.id,
-          user_id: this.player.id});
+          i: this.player.id});
       
 
 		//this.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_NEW_PLAYER, {
@@ -142,14 +141,18 @@ Game.prototype.initSocketListeners = function() {
     player.rocket.angle = data.a;
     player.rocket.colour = player.rocket.originalColour = data.c;
     player.rocket.showFlame = data.f;
-	  self.players.push(player);
+	self.players.push(player);
   });
 
+    //update player
     this.socket.on('5', function(data) {
         if (data.i == self.player.id) {
           return;
         }
         var player = self.getPlayerById(data.i);
+        if(!player) {
+            return;
+        }
         player.pos.x = data.x;
         player.pos.y = data.y;
         player.rocket.angle = data.a;

@@ -19,7 +19,7 @@ defmodule HelloPhoenix.RawketsChannel do
               new |> Player.write
             end
         end
-        #IO.puts("update player")
+        IO.puts("update player")
         broadcast! socket, "5", %{i: i, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
         {:noreply, socket}
     end

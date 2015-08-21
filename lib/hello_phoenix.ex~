@@ -1,6 +1,6 @@
 defmodule HelloPhoenix do
   use Application
-  use Database
+  use Amnesia
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -21,13 +21,7 @@ defmodule HelloPhoenix do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: HelloPhoenix.Supervisor]
     Supervisor.start_link(children, opts)
-
-    #Amnesia.Schema.create
-    Amnesia.start
-    Database.create(disk: [node])
-    Database.wait
-    Amnesia.stop
-    
+   
   end
 
   # Tell Phoenix to update the endpoint configuration

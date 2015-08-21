@@ -1,5 +1,4 @@
 use Amnesia
-
 defdatabase Database do
 
     deftable Player

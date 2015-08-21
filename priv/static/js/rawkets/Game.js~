@@ -16,7 +16,7 @@ var Game = function(player_id) {
 	this.mask = $("#mask");
 	this.offline = $("#offline");
 	
-	this.socket = new Socket();
+	this.socket = new Socket(player_id);
 	this.initSocketListeners(); // I realise this is going to receive unwanted events	
 };
 
@@ -128,6 +128,9 @@ Game.prototype.initSocketListeners = function() {
 
   //new player
   this.socket.on('3', function(data) {
+    if (data.i == self.player.id) {
+      return;
+    }
     var player = new Player(data.x, data.y);
     player.id = data.i;
     player.name = data.n;
@@ -141,8 +144,15 @@ Game.prototype.initSocketListeners = function() {
 	self.players.push(player);
   });
 
+    //update player
     this.socket.on('5', function(data) {
+        if (data.i == self.player.id) {
+          return;
+        }
         var player = self.getPlayerById(data.i);
+        if(!player) {
+            return;
+        }
         player.pos.x = data.x;
         player.pos.y = data.y;
         player.rocket.angle = data.a;
