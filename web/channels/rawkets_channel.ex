@@ -59,6 +59,16 @@ defmodule HelloPhoenix.RawketsChannel do
       {:noreply, socket}
     end 
 
+    def handle_in("11", %{"vX" => vX, "vY" => vY, "x" => x, "y" => y}, socket) do
+        b = %Bullet{playerId: socket.id, x: x, y: y, vX: vX, vY: vY, id:  get_current_time <> socket.id }
+        Amnesia.transaction do
+            b |> Bullet.write
+        end
+
+        broadcast! socket, "11", %{i: b.id, x: b.x, y: b.y}
+        {:noreply, socket}
+    end 
+
     def terminate(err, socket) do
       Amnesia.transaction do
         Player.read(socket.id) |> Player.delete
@@ -67,7 +77,12 @@ defmodule HelloPhoenix.RawketsChannel do
       broadcast! socket, "6", %{i: socket.id} 
     end
 
-
+    defp get_current_time() do
+        {ms, s, _} = :os.timestamp
+        timestamp = (ms * 1_000_000 + s)
+        to_string(timestamp)
+    end
+    
     #Redis helpers
     #Not using Redis using Mnesia
     defp decode({:ok, :undefined}) do 

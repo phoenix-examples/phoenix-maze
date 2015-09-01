@@ -155,6 +155,15 @@ Game.prototype.initSocketListeners = function() {
     this.socket.on('6', function(data) {
         self.players.splice(self.players.indexOf(self.getPlayerById(data.i)), 1);
     });
+    
+    //Add Bullet
+    this.socket.on('11', function(data) {
+        var bullet = new Bullet();
+        bullet.id = data.i;
+        bullet.worldPos.set(data.x, data.y);
+	    self.bullets.push(bullet);
+        self.sound.play("laser"); // This plays for all bullets right now
+    });
 
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
@@ -448,8 +457,21 @@ Game.prototype.update = function() {
 	};
 		
 	if (this.player.fireGun && this.player.allowedToShoot && this.player.alive) {
-		var msg = Game.formatMessage(Game.MESSAGE_TYPE_ADD_BULLET, {x: this.player.pos.x, y: this.player.pos.y, vX: this.player.rocket.velocity.x+(Math.sin(this.player.rocket.angle)*15), vY: this.player.rocket.velocity.y+(Math.cos(this.player.rocket.angle)*15)});
-		this.socket.send(msg);
+		/*var msg = Game.formatMessage(Game.MESSAGE_TYPE_ADD_BULLET, 
+                {
+                    x: this.player.pos.x, 
+                    y: this.player.pos.y, 
+                    vX: this.player.rocket.velocity.x+(Math.sin(this.player.rocket.angle)*15), 
+                    vY: this.player.rocket.velocity.y+(Math.cos(this.player.rocket.angle)*15)
+                });*/
+
+        this.socket.push(Game.MESSAGE_TYPE_ADD_BULLET, {
+                    x: this.player.pos.x, 
+                    y: this.player.pos.y, 
+                    vX: this.player.rocket.velocity.x+(Math.sin(this.player.rocket.angle)*15), 
+                    vY: this.player.rocket.velocity.y+(Math.cos(this.player.rocket.angle)*15)
+                });
+		//this.socket.send(msg);
 		this.player.shoot();
 	};
 };
