@@ -14,7 +14,7 @@ var Sound = function() {
 Sound.prototype.play = function(soundName) {
 	switch (soundName) {
 		case "background":
-			//this.container.playBackground();
+			this.container.playBackground();
 			break;
 		case "thrust":
 			this.container.playThrust();

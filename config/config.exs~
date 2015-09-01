@@ -10,8 +10,7 @@ config :hello_phoenix, HelloPhoenix.Endpoint,
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
   secret_key_base: "qZGX7OUzlYtm0QDc34NZoyON1ir1znBfePlJsThS6Eqn+c+WtDi1j204VAj1hJ99",
-  #render_errors: [default_format: "html"],
-  render_errors: [accepts: ["html"]],
+  render_errors: [default_format: "html"],
   pubsub: [name: HelloPhoenix.PubSub,
            adapter: Phoenix.PubSub.PG2]
 

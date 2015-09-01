@@ -63,6 +63,8 @@ defmodule HelloPhoenix.RawketsChannel do
       Amnesia.transaction do
         Player.read(socket.id) |> Player.delete
       end
+
+      broadcast! socket, "6", %{i: socket.id} 
     end
 
 

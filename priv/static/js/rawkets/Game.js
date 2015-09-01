@@ -77,15 +77,6 @@ Game.prototype.initGame = function() {
           a: this.player.rocket.angle, 
           f: this.player.rocket.showFlame, 
           i: this.player.id});
-      
-
-		//this.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_NEW_PLAYER, {
-    //  x: this.player.pos.x, 
-    //  y: this.player.pos.y, 
-    //  a: this.player.rocket.angle, 
-    //  f: this.player.rocket.showFlame, 
-    //  tat: this.twitterAccessToken, 
-    //  tats: this.twitterAccessTokenSecret}));
 
 		this.timeout();
 	};
@@ -126,23 +117,24 @@ Game.prototype.initSocketListeners = function() {
     self.player.allowedToShoot = true;
   })
 
-  //new player
-  this.socket.on('3', function(data) {
-    if (data.i == self.player.id) {
-      return;
-    }
-    var player = new Player(data.x, data.y);
-    player.id = data.i;
-    player.name = data.n;
-    player.active = true;
-    player.alive = true;
-    player.killCount = data.k;
-    player.rocket.pos = self.viewport.worldToScreen(player.pos.x, player.pos.y);
-    player.rocket.angle = data.a;
-    player.rocket.colour = player.rocket.originalColour = data.c;
-    player.rocket.showFlame = data.f;
-	self.players.push(player);
-  });
+
+    //new player
+    this.socket.on('3', function(data) {
+        if (data.i == self.player.id) {
+          return;
+        }
+        var player = new Player(data.x, data.y);
+        player.id = data.i;
+        player.name = data.n;
+        player.active = true;
+        player.alive = true;
+        player.killCount = data.k;
+        player.rocket.pos = self.viewport.worldToScreen(player.pos.x, player.pos.y);
+        player.rocket.angle = data.a;
+        player.rocket.colour = player.rocket.originalColour = data.c;
+        player.rocket.showFlame = data.f;
+        self.players.push(player);
+    });
 
     //update player
     this.socket.on('5', function(data) {
@@ -158,6 +150,11 @@ Game.prototype.initSocketListeners = function() {
         player.rocket.angle = data.a;
         player.rocket.showFlame = data.f
     })
+
+    //remove player
+    this.socket.on('6', function(data) {
+        self.players.splice(self.players.indexOf(self.getPlayerById(data.i)), 1);
+    });
 
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
