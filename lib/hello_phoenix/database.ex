@@ -8,7 +8,7 @@ defdatabase Database do
         @type t :: %Player{id: String.t, name: String.t, x: Decimal.t, y: Decimal.t, angle: Decimal.t, showFlame: Boolean.t, color: String.t, killCount: Integer.t}
     end
 
-    deftable Bullet, [:id, :playerId, :x, :y, :vX, :vY, :age, :alive], type: :ordered_set, index: [:id] do
+    deftable Bullet, [:id, :playerId, :x, :y, :vX, :vY, :age, :alive], type: :ordered_set, index: [:playerId] do
         @type t :: %Bullet{id: String.t, playerId: String.t, x: Decimal.t, y: Decimal.t, vX: Decimal.t, vY: Decimal.t, age: Decimal.t, alive: Boolean.t}
     end
 

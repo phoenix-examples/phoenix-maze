@@ -59,8 +59,9 @@ defmodule HelloPhoenix.RawketsChannel do
       {:noreply, socket}
     end 
 
+    #Create Bullet
     def handle_in("11", %{"vX" => vX, "vY" => vY, "x" => x, "y" => y}, socket) do
-        b = %Bullet{playerId: socket.id, x: x, y: y, vX: vX, vY: vY, id:  get_current_time <> socket.id }
+        b = %Bullet{id: get_current_time <> socket.id, playerId: socket.id, x: x, y: y, vX: vX, vY: vY, age: 0, alive: true}
         Amnesia.transaction do
             b |> Bullet.write
         end

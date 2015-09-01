@@ -165,6 +165,15 @@ Game.prototype.initSocketListeners = function() {
         self.sound.play("laser"); // This plays for all bullets right now
     });
 
+    //Update Bullets
+    this.socket.on('12', function(data) {
+      var bullet = self.getBulletById(data.i);
+      if (bullet) {
+        bullet.worldPos.x = data.x;
+        bullet.worldPos.y = data.y;
+      }
+    });
+
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
 	};
