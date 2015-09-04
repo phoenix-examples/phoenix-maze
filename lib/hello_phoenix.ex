@@ -9,7 +9,7 @@ defmodule HelloPhoenix do
 
     Amnesia.start #I feel I should stop this at some point or its going to bite me...
     #UpdateBullets will call !broadcast to all clients...ah...yeah!?
-    :timer.apply_interval(:timer.seconds(3), UpdateBullets, :tick, [])
+    :timer.apply_interval(:timer.seconds(1), UpdateBullets, :tick, [])
 
     children = [
       # Start the endpoint when the application starts

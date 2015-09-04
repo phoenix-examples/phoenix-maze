@@ -466,21 +466,12 @@ Game.prototype.update = function() {
 	};
 		
 	if (this.player.fireGun && this.player.allowedToShoot && this.player.alive) {
-		/*var msg = Game.formatMessage(Game.MESSAGE_TYPE_ADD_BULLET, 
-                {
-                    x: this.player.pos.x, 
-                    y: this.player.pos.y, 
-                    vX: this.player.rocket.velocity.x+(Math.sin(this.player.rocket.angle)*15), 
-                    vY: this.player.rocket.velocity.y+(Math.cos(this.player.rocket.angle)*15)
-                });*/
-
         this.socket.push(Game.MESSAGE_TYPE_ADD_BULLET, {
                     x: this.player.pos.x, 
                     y: this.player.pos.y, 
                     vX: this.player.rocket.velocity.x+(Math.sin(this.player.rocket.angle)*15), 
                     vY: this.player.rocket.velocity.y+(Math.cos(this.player.rocket.angle)*15)
                 });
-		//this.socket.send(msg);
 		this.player.shoot();
 	};
 };
@@ -630,7 +621,6 @@ Game.prototype.sendPlayerPosition = function() {
 		self = this;
 		self.haltMessages = true;
 		setTimeout(function() {
-			//self.socket.send(Game.formatMessage(Game.MESSAGE_TYPE_UPDATE_PLAYER, {x: self.player.pos.x, y: self.player.pos.y, a: self.player.rocket.angle, f: self.player.rocket.showFlame}));
             self.socket.push(Game.MESSAGE_TYPE_UPDATE_PLAYER, {
                 x: self.player.pos.x, 
                 y: self.player.pos.y, 

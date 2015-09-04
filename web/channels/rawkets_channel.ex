@@ -39,7 +39,7 @@ defmodule HelloPhoenix.RawketsChannel do
       push socket, "4", %{i: i, c: "rgb(199, 68, 145)"}
 
       #tell everyone about new player
-      broadcast! socket, "3", %{i: socket.id, x: x, y: y,  a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
+      broadcast! socket, "3", %{i: socket.id, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
 
       #tell new player about everyone
       Amnesia.transaction do
@@ -60,7 +60,7 @@ defmodule HelloPhoenix.RawketsChannel do
     end 
 
     #Create Bullet
-    def handle_in("11", %{"vX" => vX, "vY" => vY, "x" => x, "y" => y}, socket) do
+    def handle_in("11", %{"x" => x, "y" => y, "vX" => vX, "vY" => vY}, socket) do
         b = %Bullet{id: get_current_time <> socket.id, playerId: socket.id, x: x, y: y, vX: vX, vY: vY, age: 0, alive: true}
         Amnesia.transaction do
             b |> Bullet.write
