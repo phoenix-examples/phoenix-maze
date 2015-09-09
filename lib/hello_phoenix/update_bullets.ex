@@ -13,12 +13,21 @@ defmodule UpdateBullets do
   end
 
   defp update_bullet(bullet) do 
-    updated_bullet = %{bullet | x: bullet.x + bullet.vX, y: bullet.y + bullet.vY}
-    Amnesia.transaction do 
-      updated_bullet |> Bullet.write
+    updated_bullet = %{bullet | x: bullet.x + bullet.vX, y: bullet.y + bullet.vY, age: bullet.age + 1}
+    
+    cond do 
+      updated_bullet.age > 10 -> 
+        Amnesia.transaction do
+          bullet |> Bullet.delete
+        end
+        HelloPhoenix.Endpoint.broadcast! "rawkets:game", "13", %{i: bullet.id}
+      true -> 
+        Amnesia.transaction do 
+          updated_bullet |> Bullet.write
+        end
+        HelloPhoenix.Endpoint.broadcast! "rawkets:game", "12", %{i: updated_bullet.id, x: updated_bullet.x, y: updated_bullet.y} 
     end
 
-    HelloPhoenix.Endpoint.broadcast! "rawkets:game", "12", %{i: updated_bullet.id, x: updated_bullet.x, y: updated_bullet.y} 
   end
 
 end

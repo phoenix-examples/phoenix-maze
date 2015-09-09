@@ -174,6 +174,14 @@ Game.prototype.initSocketListeners = function() {
       }
     });
 
+    //Remove Bullets
+    this.socket.on('13', function(data) {
+      var bullet = self.getBulletById(data.i);
+      if (bullet) {
+        self.bullets.splice(self.bullets.indexOf(bullet), 1);
+      }
+    }); 
+
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
 	};
@@ -470,7 +478,7 @@ Game.prototype.update = function() {
                     x: this.player.pos.x, 
                     y: this.player.pos.y, 
                     vX: this.player.rocket.velocity.x+(Math.sin(this.player.rocket.angle)*15), 
-                    vY: this.player.rocket.velocity.y+(Math.cos(this.player.rocket.angle)*15)
+                    vY: (this.player.rocket.velocity.y+(Math.cos(this.player.rocket.angle)*15)) * -1
                 });
 		this.player.shoot();
 	};
