@@ -33,7 +33,7 @@ defmodule HelloPhoenix.RawketsChannel do
     #in NewPlayer out...
     def handle_in("3", %{"x" => x, "y" => y, "a" => a, "f" => f, "i" => i}, socket) do
       #type set color
-      p = %Player{id: socket.id, name: i, x: x, y: y, angle: a, showFlame: f, color: "rgb(199, 68, 145)", killCount: 0}
+      p = %Player{id: socket.id, name: i, x: x, y: y, angle: a, showFlame: f, color: "rgb(199, 68, 145)", killCount: 0, alive: true}
 
       #set color
       push socket, "4", %{i: i, c: "rgb(199, 68, 145)"}
@@ -69,6 +69,15 @@ defmodule HelloPhoenix.RawketsChannel do
         broadcast! socket, "11", %{i: b.id, x: b.x, y: b.y}
         {:noreply, socket}
     end 
+
+    def handle_in("16", %{"i" => i}, socket) do 
+        Amnesia.transaction do
+            p = Player.read(i)
+            updated_player = %{p | alive: true}
+            updated_player |> Player.write
+        end
+        {:noreply, socket}
+    end
 
     def terminate(err, socket) do
       Amnesia.transaction do

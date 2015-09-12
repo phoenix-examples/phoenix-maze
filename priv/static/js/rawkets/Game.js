@@ -182,6 +182,24 @@ Game.prototype.initSocketListeners = function() {
       }
     }); 
 
+    //Kill player
+    this.socket.on('14', function(data) { 
+        if (self.player.id == data.i) {
+            self.player.kill(this.viewport);
+            setTimeout(function() {
+                //var msg = Game.formatMessage(Game.MESSAGE_TYPE_REVIVE_PLAYER, {});
+                self.socket.push(Game.MESSAGE_TYPE_REVIVE_PLAYER, {i: self.player.id});
+                self.player.allowedToShoot = true;
+            }, 4000);
+        // Remote player killed
+        } else {
+            var player = self.getPlayerById(data.i);
+            player.kill();
+        };
+        
+        self.sound.play("die");
+    
+    });
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
 	};
