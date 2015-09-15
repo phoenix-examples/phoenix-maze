@@ -50,14 +50,15 @@ defmodule UpdateBullets do
     
       case {head.id == bullet.playerId, kill_radius < 10} do 
         {false, true} ->
-            IO.puts("kill player") 
-            HelloPhoenix.Endpoint.broadcast! "rawkets:game", "14", %{i: head.id} #kill player
             updated_player = %{head | alive: false}
             Amnesia.transaction do
                 updated_player |> Player.write
+                killer = Player.read(bullet.playerId)
+                updated_killer = %{killer | killCount: killCount + 1}
+                updated_killer |> Player.write
+                HelloPhoenix.Endpoint.broadcast! "rawkets:game", "14", %{i: head.id, ik: bullet.playerId, k: updated_killer.killCount } #kill player
+                HelloPhoenix.Endpoint.broadcast! "rawkets:game", "13", %{i: bullet.id} #remove bullet
             end
-            HelloPhoenix.Endpoint.broadcast! "rawkets:game", "13", %{i: bullet.id}
-            
         _ -> 
             kill_player(tail, bullet)
         end

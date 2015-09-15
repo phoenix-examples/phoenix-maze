@@ -47,15 +47,6 @@
 		
 		<div id="soundContainer"></div>
 		
-		<script type="text/javascript">
-			$(function() {
-				// Admittedly probably a stupid way to pass these variables into the game code, but it works.
-				window.TWITTER_ACCESS_TOKEN = "";
-				window.TWITTER_ACCESS_TOKEN_SECRET = "";
-				window.TWITTER_AUTHENTICATE_URL = "";
-			});
-		</script>
-		
     <script type="text/javascript" src="/js/rawkets/swfobject/swfobject.js"></script>
 		<script type="text/javascript" src="/js/rawkets/bison.js"></script>
 		<script type="text/javascript" src="/js/rawkets/Sound.js"></script>

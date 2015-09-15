@@ -35,7 +35,6 @@ $(function() {
             
 
             var playerId = decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent('rawketsPlayerId').replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || guid().slice(0,6);
-            setCookie('rawketsPlayerId', playerId, 30);
             game = new Game(playerId);
 
             $("#attribution, #ping").fadeTo(500, 0.1).mouseover(function() {

@@ -8,8 +8,6 @@
  * @constructor
  */
 var Game = function(player_id) {
-	this.twitterAccessToken = 'twitterAccessToken';
-	this.twitterAccessTokenSecret = 'twitterAccessTokenSecret';
     this.player_id = player_id;
 	this.authenticated = false;
 	
@@ -89,33 +87,33 @@ Game.prototype.initSocketListeners = function() {
 	// Horrible passing of game object due to event closure
 	var self = this;
 	
-  this.socket.join().receive("ok", function(chan) {
-	  self.offline.fadeOut();
-	  self.authenticate();
-  });
+    this.socket.join().receive("ok", function(chan) {
+        self.offline.fadeOut();
+        self.authenticate();
+    });
 
-  //authenticate
-	this.socket.on('9', function(payload) {
-    console.log(payload);
-  });
+    //authenticate
+    this.socket.on('9', function(payload) {
+        console.log(payload);
+    });
 
-  //authenticate passed
+    //authenticate passed
 	this.socket.on('7', function(payload) {
-    self.authenticated = true;
-    self.initGame();
-  });
+        self.authenticated = true;
+        self.initGame();
+    });
 
-  //type set color
-  this.socket.on('4', function(data) {
-    if (self.player.id == null) {
-      self.player.id = data.i;
-    };
-    self.player.rocket.colour = self.player.rocket.originalColour = data.c;
-    // Player is set up so let them get shot now
-    self.player.active = true;
-    self.player.alive = true;
-    self.player.allowedToShoot = true;
-  })
+    //type set color
+    this.socket.on('4', function(data) {
+        if (self.player.id == null) {
+            self.player.id = data.i;
+        };
+        self.player.rocket.colour = self.player.rocket.originalColour = data.c;
+        // Player is set up so let them get shot now
+        self.player.active = true;
+        self.player.alive = true;
+        self.player.allowedToShoot = true;
+    })
 
 
     //new player
@@ -198,8 +196,17 @@ Game.prototype.initSocketListeners = function() {
         };
         
         self.sound.play("die");
+        //update kill count
+        if (self.player.id == data.ik) {
+            self.player.killCount = data.k;
+            // Remote player
+		} else {
+            var player = self.getPlayerById(data.ik);
+            player.killCount = data.k;
+        };
     
     });
+
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
 	};

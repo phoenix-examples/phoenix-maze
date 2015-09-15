@@ -1,6 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Rawkets | A massively multiplayer game built using HTML5 canvas and WebSockets</title>
+		<meta charset="utf-8">
+		<meta name="description" content="Rawkets is a massively multiplayer game in which you can shoot and interact with other players, in real-time, in space! It uses the latest Web technologies, including HTML5 canvas and WebSockets.">
+
     <link rel="stylesheet" href="<%= static_path(@conn, "/js/rawkets/style/reset.css") %>">
     <link rel="stylesheet" href="<%= static_path(@conn, "/js/rawkets/style/main.css") %>">
-	
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script>require("web/static/js/app")</script>
+</head>
 	<body>
 		<canvas id="canvas" width="400" height="400"></canvas>
 		
@@ -46,21 +56,7 @@
 			});
 		</script>
 		
-<!--		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/swfobject/swfobject.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/bison.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Sound.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Socket.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Vector.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Rocket.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Bullet.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Player.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Viewport.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Star.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/Game.js") %>"></script>
-		<script type="text/javascript" src="<%= static_path(@conn, "/js/rawkets/main.js") %>"></script>
--->
-		
-    	<script type="text/javascript" src="/js/rawkets/swfobject/swfobject.js"></script>
+    <script type="text/javascript" src="/js/rawkets/swfobject/swfobject.js"></script>
 		<script type="text/javascript" src="/js/rawkets/bison.js"></script>
 		<script type="text/javascript" src="/js/rawkets/Sound.js"></script>
 		<script type="text/javascript" src="/js/rawkets/Socket.js"></script>
@@ -78,3 +74,6 @@
 		<script type="text/javascript">
 		try { Observerapp.record("4cc2aa5ba7b560500a05879c"); } catch(e) {};
 		</script>
+
+</body>
+</html>
