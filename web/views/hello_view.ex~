@@ -1,0 +1,3 @@
+defmodule HelloPhoenix.HelloView do 
+	use HelloPhonix.Web, :view
+end
