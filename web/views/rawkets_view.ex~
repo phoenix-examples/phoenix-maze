@@ -1,3 +1,0 @@
-defmodule HelloPhoenix.Rawkets.View do
-    use HelloPhoenix.Web, :view
-end
