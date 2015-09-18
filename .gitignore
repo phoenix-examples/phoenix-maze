@@ -8,6 +8,8 @@ erl_crash.dump
 
 # Static artifacts
 /node_modules
+/Mnesia.nonode@nohost
+
 
 # Since we are building assets from web/static,
 # we ignore priv/static. You may want to comment
