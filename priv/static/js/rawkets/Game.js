@@ -93,18 +93,18 @@ Game.prototype.initSocketListeners = function() {
     });
 
     //authenticate
-    this.socket.on('9', function(payload) {
+    this.socket.on(Game.MESSAGE_TYPE_AUTHENTICATE, function(payload) {
         console.log(payload);
     });
 
     //authenticate passed
-	this.socket.on('7', function(payload) {
+	this.socket.on(Game.MESSAGE_TYPE_AUTHENTICATION_PASSED, function(payload) {
         self.authenticated = true;
         self.initGame();
     });
 
     //type set color
-    this.socket.on('4', function(data) {
+    this.socket.on(Game.MESSAGE_TYPE_SET_COLOUR, function(data) {
         if (self.player.id == null) {
             self.player.id = data.i;
         };
@@ -117,7 +117,7 @@ Game.prototype.initSocketListeners = function() {
 
 
     //new player
-    this.socket.on('3', function(data) {
+    this.socket.on(Game.MESSAGE_TYPE_NEW_PLAYER, function(data) {
         if (data.i == self.player.id) {
           return;
         }
@@ -135,7 +135,7 @@ Game.prototype.initSocketListeners = function() {
     });
 
     //update player
-    this.socket.on('5', function(data) {
+    this.socket.on(Game.MESSAGE_TYPE_UPDATE_PLAYER, function(data) {
         if (data.i == self.player.id) {
           return;
         }
@@ -150,12 +150,12 @@ Game.prototype.initSocketListeners = function() {
     })
 
     //remove player
-    this.socket.on('6', function(data) {
+    this.socket.on(Game.MESSAGE_TYPE_REMOVE_PLAYER, function(data) {
         self.players.splice(self.players.indexOf(self.getPlayerById(data.i)), 1);
     });
     
     //Add Bullet
-    this.socket.on('11', function(data) {
+    this.socket.on(Game.MESSAGE_TYPE_ADD_BULLET, function(data) {
         var bullet = new Bullet();
         bullet.id = data.i;
         bullet.worldPos.set(data.x, data.y);
@@ -164,7 +164,7 @@ Game.prototype.initSocketListeners = function() {
     });
 
     //Update Bullets
-    this.socket.on('12', function(data) {
+    this.socket.on(Game.MESSAGE_TYPE_UPDATE_BULLET, function(data) {
       var bullet = self.getBulletById(data.i);
       if (bullet) {
         bullet.worldPos.x = data.x;
@@ -173,7 +173,7 @@ Game.prototype.initSocketListeners = function() {
     });
 
     //Remove Bullets
-    this.socket.on('13', function(data) {
+    this.socket.on(Game.MESSAGE_TYPE_REMOVE_BULLET, function(data) {
       var bullet = self.getBulletById(data.i);
       if (bullet) {
         self.bullets.splice(self.bullets.indexOf(bullet), 1);
@@ -181,7 +181,7 @@ Game.prototype.initSocketListeners = function() {
     }); 
 
     //Kill player
-    this.socket.on('14', function(data) { 
+    this.socket.on(Game.MESSAGE_TYPE_KILL_PLAYER, function(data) { 
         if (self.player.id == data.i) {
             self.player.kill(this.viewport);
             setTimeout(function() {
@@ -209,183 +209,6 @@ Game.prototype.initSocketListeners = function() {
 
 	this.socket.onclose = function() {
 		self.onSocketDisconnect();
-	};
-};
-
-
-/**
- * Event handler for socket messages
- */
-Game.prototype.onSocketMessage = function(msg) {
-	try {
-		//var json = jQuery.parseJSON(msg);
-		var data = BISON.decode(msg);
-
-		// Player has been authenticated on the server
-		if (this.authenticated) {
-			// Only deal with messages using the correct protocol
-			if (data.type) {
-				switch (data.type) {
-					case Game.MESSAGE_TYPE_ERROR:
-						console.log(data.e);
-						break;
-					case Game.MESSAGE_TYPE_SET_COLOUR:
-						if (this.player.id == null) {
-							this.player.id = data.i;
-						};
-					
-						this.player.rocket.colour = this.player.rocket.originalColour = data.c;
-						
-						// Player is set up so let them get shot now
-						this.player.active = true;
-						this.player.alive = true;
-						this.player.allowedToShoot = true;
-						
-						var msg = Game.formatMessage(Game.MESSAGE_TYPE_REVIVE_PLAYER, {});
-						this.socket.send(msg);
-						break;
-					case Game.MESSAGE_TYPE_PING:
-						if (data.t) {
-							this.socket.send(msg);
-						}
-					
-						if (data.p) {
-							this.ping.html("@"+data.n+" - "+data.p+"ms");
-						}
-						break;
-					case Game.MESSAGE_TYPE_NEW_PLAYER:
-						var player = new Player(data.x, data.y);
-						player.id = data.i;
-						player.name = data.n;
-						player.active = true;
-						player.alive = true;
-						player.killCount = data.k;
-						player.rocket.pos = this.viewport.worldToScreen(player.pos.x, player.pos.y);
-						player.rocket.angle = data.a;
-						player.rocket.colour = player.rocket.originalColour = data.c;
-						player.rocket.showFlame = data.f;
-						this.players.push(player);
-						break;
-					case Game.MESSAGE_TYPE_UPDATE_PLAYER:
-						var player = this.getPlayerById(data.i);
-						player.pos.x = data.x;
-						player.pos.y = data.y;
-						player.rocket.angle = data.a;
-						player.rocket.showFlame = data.f;
-						break
-					case Game.MESSAGE_TYPE_UPDATE_PING:
-						var player = this.getPlayerById(data.i);
-						player.ping = data.p;
-						break;
-					case Game.MESSAGE_TYPE_REMOVE_PLAYER:
-						this.players.splice(this.players.indexOf(this.getPlayerById(data.i)), 1);
-						break;
-					case Game.MESSAGE_TYPE_ADD_BULLET:
-						var bullet = new Bullet();
-						bullet.id = data.i;
-						bullet.worldPos.set(data.x, data.y);
-						this.bullets.push(bullet);
-						
-						this.sound.play("laser"); // This plays for all bullets right now
-						break;
-					case Game.MESSAGE_TYPE_UPDATE_BULLET:
-						//console.log("Update bullets");
-						var bullet = this.getBulletById(data.i);
-						bullet.worldPos.x = data.x;
-						bullet.worldPos.y = data.y;
-						break;
-					case Game.MESSAGE_TYPE_REMOVE_BULLET:
-						this.bullets.splice(this.bullets.indexOf(this.getBulletById(data.i)), 1);
-						break;
-					case Game.MESSAGE_TYPE_KILL_PLAYER:
-						// Local player killed
-						if (this.player.id == data.i) {
-							this.player.kill(this.viewport);
-							var self = this;
-							setTimeout(function() {
-								var msg = Game.formatMessage(Game.MESSAGE_TYPE_REVIVE_PLAYER, {});
-								self.socket.send(msg);
-							}, 4000);
-						// Remote player killed
-						} else {
-							var player = this.getPlayerById(data.i);
-							player.kill();
-						};
-						
-						this.sound.play("die");
-						
-						/*
-						// Bullet was from the local player
-						if (this.player.id == data.bp) {
-							this.player.killCount++;
-						// Bullet was from a remote player
-						} else {
-							var player = this.getPlayerById(data.bp);
-							player.killCount++;
-						};
-						*/
-						break;
-					case Game.MESSAGE_TYPE_UPDATE_KILLS:
-						// Local player
-						if (this.player.id == data.i) {
-							this.player.killCount = data.k;
-						// Remote player
-						} else {
-							var player = this.getPlayerById(data.i);
-							player.killCount = data.k;
-						};
-						break;
-					default:
-						//console.log("Incoming message:", json);
-				};
-			// Invalid message protocol
-			} else {
-			
-			};
-		// Player hasn't been authenticated on the server
-		} else {
-			// Only deal with messages using the correct protocol
-			if (data.type) {
-				switch (data.type) {
-					case Game.MESSAGE_TYPE_ERROR:
-						//console.log(data.e);						
-						switch (data.e) {
-							case "playerExists":
-								this.mask.fadeIn();
-								$("#playerExists").fadeIn();
-								break;
-						};
-						break;
-					case Game.MESSAGE_TYPE_AUTHENTICATION_PASSED:
-						this.authenticated = true;
-						this.initGame();
-						break;
-					case Game.MESSAGE_TYPE_AUTHENTICATION_FAILED:
-						this.mask.fadeIn();
-						$("#authenticate").fadeIn();
-						break;
-					default:
-						//console.log("Incoming message:", json);
-				};
-			// Invalid message protocol
-			} else {
-			
-			};	
-		};
-	// Data is not a valid JSON string
-	} catch (e) {
-
-	};
-};
-
-/**
- * Event handler for socket disconnection
- */
-Game.prototype.onSocketDisconnect = function() {
-	//console.log("Socket disconnected");
-	if (!$("#playerExists").is(":visible")) {
-		this.mask.fadeIn();
-		this.offline.fadeIn();
 	};
 };
 
