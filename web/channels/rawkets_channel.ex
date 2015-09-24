@@ -28,14 +28,16 @@ defmodule HelloPhoenix.RawketsChannel do
     end
 
     def handle_in(@message_type_update_player, %{"x" => x, "y" => y, "a" => a, "f" => f, "i" => i}, socket) do 
-        Amnesia.transaction do
-            old = Player.read(i)
-            if old do        
-              new = %{old | x: x, y: y, angle: a, showFlame: f}
-              new |> Player.write
-            end
-        end
-        broadcast! socket, @message_type_update_player, %{i: i, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
+        #Amnesia.transaction do
+        #    old = Player.read(i)
+        #    if old do        
+        #      new = %{old | x: x, y: y, angle: a, showFlame: f}
+        #      new |> Player.write
+        #    end
+        #end
+        #broadcast! socket, @message_type_update_player, %{i: i, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
+        
+        HelloPhoenix.PlayerAgent.update(i, x, y, a, f)
         {:noreply, socket}
     end
 
@@ -65,20 +67,16 @@ defmodule HelloPhoenix.RawketsChannel do
         end
 
         #write new player to db
-        p |> Player.write
+        #p |> Player.write
       end
+
+      HelloPhoenix.PlayerAgent.start_link(p)
       
       {:noreply, socket}
     end 
 
     #Create Bullet
     def handle_in(@message_type_add_bullet, %{"x" => x, "y" => y, "vX" => vX, "vY" => vY}, socket) do
-        #b = %Bullet{id: get_current_time <> socket.id, playerId: socket.id, x: x, y: y, vX: vX, vY: vY, age: 0, alive: true}
-        #Amnesia.transaction do
-        #    b |> Bullet.write
-        #end
-
-        #broadcast! socket, @message_type_add_bullet, %{i: b.id, x: b.x, y: b.y}
         HelloPhoenix.BulletTask.start_link(socket.id, x, y, vX, vY)
         
         {:noreply, socket}

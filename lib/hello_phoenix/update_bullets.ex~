@@ -54,7 +54,7 @@ defmodule UpdateBullets do
             Amnesia.transaction do
                 updated_player |> Player.write
                 killer = Player.read(bullet.playerId)
-                updated_killer = %{killer | killCount: killCount + 1}
+                updated_killer = %{killer | killCount: killer.killCount + 1}
                 updated_killer |> Player.write
                 HelloPhoenix.Endpoint.broadcast! "rawkets:game", "14", %{i: head.id, ik: bullet.playerId, k: updated_killer.killCount } #kill player
                 HelloPhoenix.Endpoint.broadcast! "rawkets:game", "13", %{i: bullet.id} #remove bullet
