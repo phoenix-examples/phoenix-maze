@@ -1,0 +1,13 @@
+<script>
+  if(typeof window.orientation !== 'undefined'){
+    window.location = "maze/mobile";
+  }
+</script>
+
+<form action="maze/game" method="post">
+  Your game code is : <%= @game_code %>
+  <input type="hidden" name="_csrf_token" value="<%= get_csrf_token()%>" />
+  <input type="hidden" name="game_code" value="<%= @game_code %>" />
+  <button type="submit" class="btn" id="start_game">Start Game</button>
+</form>
+

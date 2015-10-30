@@ -6,7 +6,7 @@ defmodule HelloPhoenix.MazeChannel do
     end
 
     def join("maze:" <> _private_room_id, _auth_msg, socket) do
-        {:error, %{reason: "unauthorized"}}
+        {:ok, socket}
     end
 
     def handle_in("move_player", %{"playerId" => playerId, "posX" => posX, "posY" => posY, "style" => style}, socket) do

@@ -1,0 +1,88 @@
+    <h2>MOBILE</h2>
+    enter game code: <input type="text" id="game_code"/><button cls="btn" id="enter_game_code">Enter</button>
+    <p>
+      move player with arrow keys
+    </p>
+    <noscript>JavaScript is not enabled. To play the game, you should enable it.</noscript>
+    <script>
+        function guid() {
+            var ret = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);});
+            return ret;
+        }
+        // Maze game created by ProgramFOX; http://www.codeproject.com/Members/ProgramFOX
+        // Licensed under CPOL: http://www.codeproject.com/info/cpol10.aspx
+
+        // 425 (X), 3 (Y) RECTANGLE
+        // 542 (center X), 122 (center Y) CIRCLE
+        var mazeWidth = 556;
+        var mazeHeight = 556;
+        var intervalVar;
+
+        //var myId = guid();
+        var myId = 'playerOne';
+        var me = {playerId: myId, posX: 425, posY: 3, style: '#0000FF'};
+        var chan = {};
+
+        $('#enter_game_code').on('click', function() {
+          var game_code = $('#game_code').val();
+          enter_game(game_code);
+        });
+
+        function enter_game(game_code) {
+          var socket = new Phoenix.Socket("/ws")
+          socket.connect()
+          chan = socket.chan("maze:" + game_code, {})
+          chan.join().receive("ok", function(chan) {
+              console.log("Success!")
+            });
+        }
+
+        function moveRect(e) {
+            var newX;
+            var newY;
+            var movingAllowed;
+            e = e || window.event;
+            switch (e.keyCode) {
+                case 38:   // arrow up key
+                case 87: // W key
+                    newX = me.posX;
+                    newY = me.posY - 3;
+                    sendMove(newX,newY);
+                    break;
+                case 37: // arrow left key
+                case 65: // A key
+                    newX = me.posX - 3;
+                    newY = me.posY;
+                    sendMove(newX,newY);
+                    break;
+                case 40: // arrow down key
+                case 83: // S key
+                    newX = me.posX;
+                    newY = me.posY + 3;
+                    sendMove(newX,newY);
+                    break;
+                case 39: // arrow right key
+                case 68: // D key
+                    newX = me.posX + 3;
+                    newY = me.posY;
+                    sendMove(newX,newY);
+                    break;
+            }
+             
+        }
+
+        function sendMove(newX, newY) {
+          me.posX = newX;
+          me.posY = newY;
+          chan.push('move_player', me);
+        }
+
+        //drawMazeAndRectangle(players[myId]);
+        window.addEventListener("keydown", moveRect, true);
+        //createTimer(120); // 2 minutes
+       
+
+    </script>
+

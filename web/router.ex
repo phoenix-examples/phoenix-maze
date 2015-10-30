@@ -19,7 +19,9 @@ defmodule HelloPhoenix.Router do
     get "hello", HelloController, :index
     get "hello/:messenger", HelloController, :show
 
-    get "maze", MazeController, :index
+    get "maze", MazeController, :start
+    post "maze/game", MazeController, :game
+    get "maze/mobile", MazeController, :mobile
     get "rawkets", RawketsController, :index
   end
 

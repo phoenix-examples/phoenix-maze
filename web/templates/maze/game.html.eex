@@ -1,4 +1,5 @@
     <h2>HTML5 Maze Game</h2>
+    <h2>Game Code: <%= @game_code %></h2>
     <p>
         Welcome!<br />        
         This is a HTML5 Maze Game created by <a href="http://www.codeproject.com/script/Membership/View.aspx?mid=8966127">ProgramFOX</a>.
@@ -23,23 +24,21 @@
         var mazeHeight = 556;
         var intervalVar;
 
-        var myId = guid();
+        //var myId = guid();
+        var myId = 'playerOne';
         var me = {playerId: myId, posX: 425, posY: 3, style: '#0000FF'};
         var players = {};
         players[myId] = me;
 
         var socket = new Phoenix.Socket("/ws")
         socket.connect()
-        var chan = socket.chan("maze:lobby", {})
+        var chan = socket.chan("maze:<%= @game_code %>", {})
         chan.join().receive("ok", function(chan) {
             console.log("Success!")
         });
 
         chan.on("move_player", function(payload) {
             console.log(payload);
-            if (me.playerId == payload.playerId) {
-                return; //don't need to me self
-            }
 
             if (!players[payload.playerId]) {
                 players[payload.playerId] = payload; //add player if doesn't exist
@@ -64,7 +63,7 @@
                 context.fillStyle = '#00FF00';
                 context.fill();
             };
-            mazeImg.src = "images/maze.gif";
+            mazeImg.src = "/images/maze.gif";
         }
 
         function drawPlayer(player) {
