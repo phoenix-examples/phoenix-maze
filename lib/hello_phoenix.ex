@@ -7,9 +7,10 @@ defmodule HelloPhoenix do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    Amnesia.start #I feel I should stop this at some point or its going to bite me...
+    
     #UpdateBullets will call !broadcast to all clients...ah...yeah!?
-    :timer.apply_interval(30, UpdateBullets, :tick, [])
+    HelloPhoenix.GameAgent.start_link()
+    :timer.apply_interval(30, HelloPhoenix.GameAgent, :tick, [])
 
     children = [
       # Start the endpoint when the application starts
