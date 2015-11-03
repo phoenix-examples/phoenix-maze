@@ -7,6 +7,11 @@ defmodule HelloPhoenix do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    
+    #UpdateBullets will call !broadcast to all clients...ah...yeah!?
+    HelloPhoenix.GameAgent.start_link()
+    :timer.apply_interval(30, HelloPhoenix.GameAgent, :tick, [])
+
     children = [
       # Start the endpoint when the application starts
       supervisor(HelloPhoenix.Endpoint, []),

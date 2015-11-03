@@ -9,18 +9,19 @@ defmodule HelloPhoenix do
 
     
     #UpdateBullets will call !broadcast to all clients...ah...yeah!?
-    HelloPhoenix.GameAgent.start_link()
-    :timer.apply_interval(30, HelloPhoenix.GameAgent, :tick, [])
+    #HelloPhoenix.GameAgent.start_link()
 
     children = [
       # Start the endpoint when the application starts
       supervisor(HelloPhoenix.Endpoint, []),
       # Start the Ecto repository
       worker(HelloPhoenix.Repo, []),
+      worker(HelloPhoenix.GameAgent, []),
       # Here you could define other workers and supervisors as children
       # worker(HelloPhoenix.Worker, [arg1, arg2, arg3]),
       # worker(HelloPhoenix.Redis, []),
     ]
+    :timer.apply_interval(30, HelloPhoenix.GameAgent, :tick, [])
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options

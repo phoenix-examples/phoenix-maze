@@ -60,7 +60,7 @@ defmodule HelloPhoenix.GameAgent do
 
   defp update_key(dict, key, fun) do 
     try do
-      HashDict.update!(dict, key, fn(s) -> fun.(s) end)
+      HashDict.update!(dict, key, fn(s) -> fun(s) end)
     rescue
       KeyError -> dict
     end

@@ -1,6 +1,5 @@
 defmodule HelloPhoenix.RawketsChannel do
     use Phoenix.Channel
-    use Database
 
     @message_type_ping "1"
     @message_type_update_ping "2"
@@ -28,13 +27,13 @@ defmodule HelloPhoenix.RawketsChannel do
     end
 
     def handle_in(@message_type_update_player, %{"x" => x, "y" => y, "a" => a, "f" => f, "i" => i}, socket) do 
-        Amnesia.transaction do
-            old = Player.read(i)
-            if old do        
-              new = %{old | x: x, y: y, angle: a, showFlame: f}
-              new |> Player.write
-            end
+        old = HelloPhoenix.GameAgent.get_player(i)
+
+        if old do        
+          new = %{old | x: x, y: y, angle: a, showFlame: f}
+          HelloPhoenix.GameAgent.update_player(new)
         end
+
         broadcast! socket, @message_type_update_player, %{i: i, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
         {:noreply, socket}
     end
@@ -48,7 +47,7 @@ defmodule HelloPhoenix.RawketsChannel do
     #in NewPlayer out...
     def handle_in(@message_type_new_player, %{"x" => x, "y" => y, "a" => a, "f" => f, "i" => i}, socket) do
       #type set color
-      p = %Player{id: socket.id, name: i, x: x, y: y, angle: a, showFlame: f, color: "rgb(199, 68, 145)", killCount: 0, alive: true}
+      p = %HelloPhoenix.Player{id: socket.id, name: i, x: x, y: y, angle: a, showFlame: f, color: "rgb(199, 68, 145)", killCount: 0, alive: true}
 
       #set color
       push socket, @message_type_set_colour, %{i: i, c: "rgb(199, 68, 145)"}
@@ -57,44 +56,31 @@ defmodule HelloPhoenix.RawketsChannel do
       broadcast! socket, @message_type_new_player, %{i: socket.id, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
 
       #tell new player about everyone
-      Amnesia.transaction do
-        selection = Player.where id != nil
-        if selection do
-            all_players = selection |> Amnesia.Selection.values
-            Enum.each(all_players, fn(p) -> push socket, @message_type_new_player, %{i: p.name, x: p.x, y: p.y, a: p.angle, c: p.color, f: p.showFlame, n: p.name, k: p.killCount} end)
-        end
+      all_players = HelloPhoenix.GameAgent.get_players() 
+      Enum.each(all_players, fn(p) -> push socket, @message_type_new_player, %{i: p.name, x: p.x, y: p.y, a: p.angle, c: p.color, f: p.showFlame, n: p.name, k: p.killCount} end)
 
-        #write new player to db
-        p |> Player.write
-      end
+      #write new player to db
+      HelloPhoenix.GameAgent.add_player(p)
       
       {:noreply, socket}
     end 
 
     #Create Bullet
     def handle_in(@message_type_add_bullet, %{"x" => x, "y" => y, "vX" => vX, "vY" => vY}, socket) do
-        b = %Bullet{id: get_current_time <> socket.id, playerId: socket.id, x: x, y: y, vX: vX, vY: vY, age: 0, alive: true}
-        Amnesia.transaction do
-            b |> Bullet.write
-        end
+        b = %HelloPhoenix.Bullet{id: get_current_time <> socket.id, playerId: socket.id, x: x, y: y, vX: vX, vY: vY, age: 0, alive: true}
+        HelloPhoenix.GameAgent.add_bullet(b)
 
         broadcast! socket, @message_type_add_bullet, %{i: b.id, x: b.x, y: b.y}
         {:noreply, socket}
     end 
 
     def handle_in(@message_type_revive_player, %{"i" => i}, socket) do 
-        Amnesia.transaction do
-            p = Player.read(i)
-            updated_player = %{p | alive: true}
-            updated_player |> Player.write
-        end
+        HelloPhoenix.GameAgent.revive_player(i)
         {:noreply, socket}
     end
 
     def terminate(err, socket) do
-      Amnesia.transaction do
-        Player.read(socket.id) |> Player.delete
-      end
+      HelloPhoenix.GameAgent.remove_player(socket.id)
 
       broadcast! socket, @message_type_remove_player, %{i: socket.id} 
     end
