@@ -9,7 +9,7 @@ defmodule HelloPhoenix.GameAgent do
   end
 
   def update_player(player) do 
-    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | players: HashDict.update!(s.players, player.id, fn(s) -> player end)}} end)
+    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | players: update_key(s.players, player.id, fn(s) -> player end)}} end)
   end
 
   def revive_player(playerId) do
@@ -21,7 +21,7 @@ defmodule HelloPhoenix.GameAgent do
   end
 
   def add_kill(playerId) do 
-    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | players: HashDict.update!(s.players, playerId, fn(player) -> %{player | killCount: player.killCount + 1} end)}} end) 
+    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | players: update_key(s.players, playerId, fn(player) -> %{player | killCount: player.killCount + 1} end)}} end) 
   end
 
   def get_player(playerId) do 
@@ -41,7 +41,7 @@ defmodule HelloPhoenix.GameAgent do
   end
 
   def update_bullet(bullet) do 
-    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | bullets: HashDict.update!(s.bullets, bullet.id, fn(s) -> bullet end)}} end)
+    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | bullets: update_key(s.bullets, bullet.id, fn(s) -> bullet end)}} end)
   end
 
   def delete_bullet(bulletId) do

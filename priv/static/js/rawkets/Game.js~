@@ -115,7 +115,6 @@ Game.prototype.initSocketListeners = function() {
         self.player.allowedToShoot = true;
     })
 
-
     //new player
     this.socket.on(Game.MESSAGE_TYPE_NEW_PLAYER, function(data) {
         if (data.i == self.player.id) {
@@ -211,7 +210,6 @@ Game.prototype.initSocketListeners = function() {
 		self.onSocketDisconnect();
 	};
 };
-
 
 /**
  * Authenticate player on the server
@@ -485,7 +483,7 @@ Game.prototype.sendPlayerPosition = function() {
                 f: self.player.rocket.showFlame,
                 i: self.player.id});
 			self.haltMessages = false;
-		}, 30);
+		}, 300);
 	};
 };
 

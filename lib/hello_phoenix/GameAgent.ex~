@@ -9,7 +9,7 @@ defmodule HelloPhoenix.GameAgent do
   end
 
   def update_player(player) do 
-    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | players: HashDict.update!(s.players, player.id, fn(s) -> player end)}} end)
+    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | players: update_key(s.players, player.id, fn(s) -> player end)}} end)
   end
 
   def revive_player(playerId) do
@@ -21,7 +21,7 @@ defmodule HelloPhoenix.GameAgent do
   end
 
   def add_kill(playerId) do 
-    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | players: HashDict.update!(s.players, playerId, fn(player) -> %{player | killCount: player.killCount + 1} end)}} end) 
+    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | players: update_key(s.players, playerId, fn(player) -> %{player | killCount: player.killCount + 1} end)}} end) 
   end
 
   def get_player(playerId) do 
@@ -60,7 +60,7 @@ defmodule HelloPhoenix.GameAgent do
 
   defp update_key(dict, key, fun) do 
     try do
-      HashDict.update!(dict, key, fn(s) -> fun(s) end)
+      HashDict.update!(dict, key, fn(s) -> fun.(s) end)
     rescue
       KeyError -> dict
     end
