@@ -103,6 +103,8 @@ defmodule HelloPhoenix.GameAgent do
                 update_player(updated_player)
                 add_kill(bullet.playerId)
                 updated_killer = get_player(bullet.playerId)
+                delete_bullet(bullet.id)
+
                 HelloPhoenix.Endpoint.broadcast! "rawkets:game", "14", %{i: head.id, ik: bullet.playerId, k: updated_killer.killCount } #kill player
                 HelloPhoenix.Endpoint.broadcast! "rawkets:game", "13", %{i: bullet.id} #remove bullet
         _ -> 
