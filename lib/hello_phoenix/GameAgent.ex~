@@ -41,7 +41,7 @@ defmodule HelloPhoenix.GameAgent do
   end
 
   def update_bullet(bullet) do 
-    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | bullets: HashDict.update!(s.bullets, bullet.id, fn(s) -> bullet end)}} end)
+    Agent.get_and_update(:rawkets, fn(s) -> {:ok, %{s | bullets: update_key(s.bullets, bullet.id, fn(s) -> bullet end)}} end)
   end
 
   def delete_bullet(bulletId) do
@@ -80,7 +80,7 @@ defmodule HelloPhoenix.GameAgent do
         HelloPhoenix.Endpoint.broadcast! "rawkets:game", "13", %{i: bullet.id}
       true -> 
         #kill player?
-        alive_players = get_players() 
+        alive_players = players 
         kill_player(alive_players, updated_bullet)
 
         update_bullet(updated_bullet)

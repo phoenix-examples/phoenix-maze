@@ -483,7 +483,7 @@ Game.prototype.sendPlayerPosition = function() {
                 f: self.player.rocket.showFlame,
                 i: self.player.id});
 			self.haltMessages = false;
-		}, 60);
+		}, 30);
 	};
 };
 

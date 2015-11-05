@@ -34,7 +34,7 @@ defmodule HelloPhoenix.RawketsChannel do
           HelloPhoenix.GameAgent.update_player(new)
         end
 
-        broadcast! socket, @message_type_update_player, %{i: i, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
+        #broadcast! socket, @message_type_update_player, %{i: i, x: x, y: y, a: a, c: "rgb(199, 68, 145)", f: f, n: i, k: 0} 
         {:noreply, socket}
     end
 
